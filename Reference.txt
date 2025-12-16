@@ -1,0 +1,78 @@
+# torch = for DL & ML tasks like tensor computation
+# from torch import nn = tool for building and training NN
+
+torch.manual_seed(111)    # any random operations performed by PyTorch, such as initializing weights in neural networks or shuffling data during training,
+                          # will produce the same results each time the code is run with the same seed. any random processes within your code,
+                          # such as initializing model weights, shuffling datasets, or generating random numbers for simulations, will produce the same outcomes each time the code is run with the same seed.
+
+cuda 	=  produced by NVIDIA, API or Paralle Computing Platform
+
+transform = transforms.Compose(
+    [transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))]
+)
+
+# ToTensor()  =>  from image's any format to tensor
+# Normalise(mean,sd) =>  tensor-mean/sd => [-1,1]
+# compose()   => combines both process like a single pipeline
+
+Tensor: DS to rep data & perform computations. Multidimensional array.
+
+train_loader = torch.utils.data.DataLoader( train_set, batch_size= 32, shuffle=True )
+# divide the training dataset into n batches with each batch of 32 samples. Shuffle it before dividing into batches.
+
+real_samples, mnist_labels = next(iter(train_loader))	# the next batch of the train_loader
+for i in range(16):
+    ax = plt.subplot(4, 4, i + 1)	# create 4x4 grid. train_loader will start its index from 0 but grid from 1
+    plt.imshow(real_samples[i].reshape(28, 28), cmap="gray_r")	# (1,28,28) meant one image of 28x28 pixels into 28x28 grid flattened.
+    plt.xticks([])	# remove the default ticks of matplotlib on the subplots
+    plt.yticks([])	# remove the default ticks of matplotlib on the subplots
+
+class Discriminator(nn.Module):    # nn.module is the base class for all NN models in pytorch
+    def __init__(self):		   # constructor of the class, inizialises obj when instance is created
+        super().__init__()         # call constructor of parent class to initialise discriminator class
+
+self.model = nn.Sequential(	    # seq() refers that one layer after the other in the order given
+            nn.Linear(784, 1024),   # 784 i/p becoz 28x28 grid each image/digit has so 28x28=784 columns for each img/digit and 1024 feature o/p.           
+	    nn.ReLU(),		    # Rectified Linearity Unit, f(x) = max(0,x) means IF x>0, f(x)=x ELSE 0 for -ve values. => introducing non-linearity
+            nn.Dropout(0.3),	    # subset of i/p=0 so redundant rep are learnt and don't rely only on any subset
+            nn.Linear(1024, 512),
+            nn.ReLU(),		    # model complex rel b/w i/p & o/p for learning and representing intricate patterns in the data.
+            nn.Dropout(0.3),	# a regularization technique used during training to prevent overfitting.
+            nn.Linear(512, 256),
+            nn.ReLU(),
+            nn.Dropout(0.3),	# prevent the generator or discriminator from memorizing the training data and improves generalization.
+            nn.Linear(256, 1),
+            nn.Sigmoid(),	# f(x)=1/(1+e^-x) => for all x, 0<=f(x)<=1 => so binary classification
+
+# ReLU => ability to mitigate the vanishing gradient problem 
+eLU maintains a constant gradient of 1 for positive inputs. 
+This means that during backpropagation, the gradient signal remains strong for +ve 
+activations, allowing for more effective weight updates and faster convergence.
+simplicity, no exponentiation => effective computation   used in CNN and GANs
+
+in classification tasks, softmax activation is commonly used in the output layer 
+instead of sigmoid for multi-class classification, and different regularization 
+techniques such as L2 regularization might be preferred over dropout in certain scenarios.
+
+x = x.view(x.size(0), 784)	# a 2D tensor with a size of (batch_size, 784)
+	# necessary to match the input size expected by the first linear layer.
+
+The no. of hidden layers and units is often based on 
+	=> empirical testing and depends on factors such as 
+		=> the complexity of the problem, 
+		=> the amount of available data, and 
+		=> computational resources.
+
+lr = 0.0001      => Learning rate.... hyperparam used during updating weight
+num_epochs = 10  => epoch refers to 1 complete pass through the entire training ds
+loss_function = nn.BCELoss()   => Binary Cross Entropy's instance, binary classification tasks to determine real or fake
+	=> measures the difference between the predicted values and the true labels, aiming to minimize this difference during training
+
+Adam optimizer:
+
+
+
+
+
+
+
